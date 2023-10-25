@@ -7,4 +7,5 @@ void all_init() {
   init_motor();
   init_encoder();
   init_test();
+  init_en();
 }

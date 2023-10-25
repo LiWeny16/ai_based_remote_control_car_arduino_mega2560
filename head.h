@@ -58,12 +58,28 @@ public:
     this->speed_4 = speed_4;
   }
 };
-extern Speed speed;
+
+class Speed_Set {
+public:
+  int speed_set_1;
+  int speed_set_2;
+  int speed_set_3;
+  int speed_set_4;
+  void speed_set_init(int speed_1, int speed_2, int speed_3, int speed_4) {
+    this->speed_set_1 = speed_1;
+    this->speed_set_2 = speed_2;
+    this->speed_set_3 = speed_3;
+    this->speed_set_4 = speed_4;
+  }
+};
+
+extern Speed speed_now;
+extern Speed_Set speed_set;
 // extern int* encoder_count;
 void interrupt_sum_encoder_1();
 void interrupt_sum_encoder_2();
-void speed_calculate(int* count_1, int* count_2);
-void speed_calculate(int* count_1, int* count_2, int* count_3, int* count_4);
+void speed_calculate(int* count_1, int* count_2,Speed* speed_now);
+// void speed_calculate(int* count_1, int* count_2, int* count_3, int* count_4);
 void init_encoder();
 // void sum_encoder(int* count);
 void sum_encoder(int* count, int port_interrupt, int port_data);
@@ -125,6 +141,49 @@ public:
 extern En_All en_all_arg;
 void init_en();
 
+// ******************************//PID//****************
+
+
+class Err_Speed {
+public:
+  int err_speed_now;
+  int err_speed_last;
+  int err_speed_past;
+  int err_speed_differential_1;
+  int err_speed_differential_2;
+  void init_err_speed(int err,
+                      int err_last,
+                      int err_past,
+                      int err_speed_differential_1,
+                      int err_speed_differential_2) {
+    this->err_speed_now = err;
+    this->err_speed_last = err_last;
+    this->err_speed_past = err_past;
+    this->err_speed_differential_1 = err_speed_differential_1;
+    this->err_speed_differential_2 = err_speed_differential_2;
+  }
+  /**  
+ * @brief 计算PID所需要的误差,可重复调用来精简代码量
+ * @param speed_now 现在的速度,从speed_now 类里调用
+ * @param speed_set 设置的速度
+ */
+  void calculate_err_motor(int speed, int speed_set);
+};
+extern Err_Speed err_speed;
+class PID_Motor {
+public:
+  float P;
+  float I;
+  float D;
+  void pid_init(float P,
+                float I,
+                float D) {
+    this->P = P;
+    this->I = I;
+    this->D = D;
+  }
+};
+
 // ******************************//Others//****************
 
 // @ test variable
@@ -141,7 +200,6 @@ public:
   }
 };
 extern Test my_test;
-
 
 
 void init_test();
