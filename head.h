@@ -1,3 +1,8 @@
+// @开源协议 GPL3.0
+// @作者 Bigonion
+// @NameSpace bigonion.cn
+// @github https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560
+
 #ifndef HEAD_H
 #define HEAD_H
 #include "Arduino.h"
@@ -78,7 +83,7 @@ extern Speed_Set speed_set;
 // extern int* encoder_count;
 void interrupt_sum_encoder_1();
 void interrupt_sum_encoder_2();
-void speed_calculate(int* count_1, int* count_2,Speed* speed_now);
+void speed_calculate(int* count_1, int* count_2, Speed* speed_now);
 // void speed_calculate(int* count_1, int* count_2, int* count_3, int* count_4);
 void init_encoder();
 // void sum_encoder(int* count);
@@ -169,21 +174,38 @@ public:
  */
   void calculate_err_motor(int speed, int speed_set);
 };
-extern Err_Speed err_speed;
+extern Err_Speed err_speed_1;
 class PID_Motor {
 public:
   float P;
   float I;
   float D;
+  int motor_out_pid;
+  int motor_out_now;
+  int motor_out_last;
+  /**  
+ * @brief 计算motor_motor
+ * @param err_speed Err_Speed类型
+ */
+  void calculate_pid_motor(Err_Speed* err_speed);
+  int constrain_motor_out(int motor_out);
   void pid_init(float P,
                 float I,
-                float D) {
+                float D,
+                int motor_out_pid,
+                int motor_out_now,
+                int motor_out_last) {
     this->P = P;
     this->I = I;
     this->D = D;
+    this->motor_out_pid = motor_out_pid;
+    this->motor_out_now = motor_out_now;
+    this->motor_out_last = motor_out_last;
   }
+  void pid_control_motor();
 };
-
+void init_pid();
+extern PID_Motor pid_motor_1;
 // ******************************//Others//****************
 
 // @ test variable
