@@ -64,6 +64,9 @@ public:
   }
 };
 
+/**
+ @description 四个轮子的速度设定
+*/
 class Speed_Set {
 public:
   int speed_set_1;
@@ -206,6 +209,11 @@ public:
 };
 void init_pid();
 extern PID_Motor pid_motor_1;
+
+// ******************************//Serial//****************
+// class 
+
+
 // ******************************//Others//****************
 
 // @ test variable

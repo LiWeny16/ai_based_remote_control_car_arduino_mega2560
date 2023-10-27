@@ -22,7 +22,7 @@ void PID_Motor::calculate_pid_motor(Err_Speed* err_speed) {
 void PID_Motor::pid_control_motor() {
 
   this->motor_out_now = this->motor_out_last + this->motor_out_pid;
-  Serial.print(this->constrain_motor_out((int)this->motor_out_now));
+  // Serial.print(this->constrain_motor_out((int)this->motor_out_now));
   Motor_Arg my_motor_arg_1(motor_port_zq, this->constrain_motor_out((int)this->motor_out_now));
   // Motor_Arg my_motor_arg_2(motor_port_yq, 50);
   motor_control(my_motor_arg_1);

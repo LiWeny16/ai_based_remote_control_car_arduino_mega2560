@@ -54,8 +54,9 @@ void loop() {
     pid_motor_1.P = 0.2;
     pid_motor_1.I = 0.2;
     pid_motor_1.D = 0;
+    // 计算PID修正量
     pid_motor_1.calculate_pid_motor(&err_speed_1);
-
+    // 执行PID输出
     pid_motor_1.pid_control_motor();
 
     // Serial.println("speed_now: ");
