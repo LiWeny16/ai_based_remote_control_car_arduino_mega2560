@@ -10,10 +10,7 @@ Test my_test;
 En_Motor en_motor;
 En_Encoder en_encoder;
 En_All en_all_arg;
-void init_serial(unsigned long baud) {
-  Serial.begin(baud);
-  Serial.println("Mega 2560 is ready!");
-}
+
 void init_en() {
   // 电机使能
   en_motor.init_en_motor(true, true, true, true);

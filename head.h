@@ -5,9 +5,11 @@
 
 #ifndef HEAD_H
 #define HEAD_H
+#include <SoftwareSerial.h>
 #include "Arduino.h"
 #include "port.h"
 
+#define MAX_PWM_ABS 200
 // ******************************//Motor//****************
 enum DIR {
   FOR,  // Forward;
@@ -26,7 +28,7 @@ public:
 extern Motor_Port motor_port_zq;
 extern Motor_Port motor_port_yq;
 extern Motor_Port motor_port_zh;
-extern Motor_Port motor_port_yq;
+extern Motor_Port motor_port_yh;
 class Motor_Arg {
 public:
   Motor_Port port;
@@ -86,8 +88,10 @@ extern Speed_Set speed_set;
 // extern int* encoder_count;
 void interrupt_sum_encoder_1();
 void interrupt_sum_encoder_2();
+void interrupt_sum_encoder_3();
+void interrupt_sum_encoder_4();
 void speed_calculate(int* count_1, int* count_2, Speed* speed_now);
-// void speed_calculate(int* count_1, int* count_2, int* count_3, int* count_4);
+void speed_calculate(int* count_1, int* count_2, int* count_3, int* count_4, Speed* speed_now);
 void init_encoder();
 // void sum_encoder(int* count);
 void sum_encoder(int* count, int port_interrupt, int port_data);
@@ -178,6 +182,9 @@ public:
   void calculate_err_motor(int speed, int speed_set);
 };
 extern Err_Speed err_speed_1;
+extern Err_Speed err_speed_2;
+extern Err_Speed err_speed_3;
+extern Err_Speed err_speed_4;
 class PID_Motor {
 public:
   float P;
@@ -192,6 +199,7 @@ public:
  */
   void calculate_pid_motor(Err_Speed* err_speed);
   int constrain_motor_out(int motor_out);
+  void pid_control_motor(Motor_Port motor_port);
   void pid_init(float P,
                 float I,
                 float D,
@@ -205,15 +213,17 @@ public:
     this->motor_out_now = motor_out_now;
     this->motor_out_last = motor_out_last;
   }
-  void pid_control_motor();
 };
 void init_pid();
 extern PID_Motor pid_motor_1;
+extern PID_Motor pid_motor_2;
+extern PID_Motor pid_motor_3;
+extern PID_Motor pid_motor_4;
 
 // ******************************//Serial//****************
-// class 
+extern SoftwareSerial Serial_8266;
 
-
+void handle_serial_from_8266(SoftwareSerial* Serial_8266, String* char_sum);
 // ******************************//Others//****************
 
 // @ test variable

@@ -16,10 +16,16 @@ public:
 
 class All_Direction_Movement : public Base_Movement {
 public:
-  void straight(Speed_Set* speed_set) override {
-    (*speed_set).speed_set_1 = 100;
-    (*speed_set).speed_set_2 = 100;
-    (*speed_set).speed_set_3 = 100;
-    (*speed_set).speed_set_4 = 100;
+  void straight(Speed_Set* speed_set, int speed_rate) {
+    (*speed_set).speed_set_1 = speed_rate;
+    (*speed_set).speed_set_2 = speed_rate;
+    (*speed_set).speed_set_3 = speed_rate;
+    (*speed_set).speed_set_4 = speed_rate;
+  }
+  void back(Speed_Set* speed_set, int speed_rate) {
+    (*speed_set).speed_set_1 = -speed_rate;
+    (*speed_set).speed_set_2 = -speed_rate;
+    (*speed_set).speed_set_3 = -speed_rate;
+    (*speed_set).speed_set_4 = -speed_rate;
   }
 };
