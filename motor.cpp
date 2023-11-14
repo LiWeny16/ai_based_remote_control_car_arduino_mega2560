@@ -116,6 +116,13 @@ void speed_calculate(int* count_1, int* count_2, int* count_3, int* count_4, Spe
     en_all_arg.en_encoder.en_speed_4 ? (attachInterrupt(digitalPinToInterrupt(Encoder_4_1), interrupt_sum_encoder_4, CHANGE)) : (void)1;
   }
 }
+
+/**  
+ * @brief 编码器计数
+ * @param count int*
+ * @param port_interrupt int
+ * @param port_data int
+ */
 void sum_encoder(int* count, int port_interrupt, int port_data) {
   if (digitalRead(port_data) == HIGH) {
     if (digitalRead(port_interrupt) == LOW) {  //B 高 A 低

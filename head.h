@@ -9,7 +9,7 @@
 #include "Arduino.h"
 #include "port.h"
 
-#define MAX_PWM_ABS 200
+#define MAX_PWM_ABS 170
 // ******************************//Motor//****************
 enum DIR {
   FOR,  // Forward;

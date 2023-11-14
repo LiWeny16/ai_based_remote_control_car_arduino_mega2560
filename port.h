@@ -26,7 +26,7 @@
 #define Motor_PWM_4_2 11
 
 // @ Encoder
-#define Encoder_1_1 2 //负责中断
+#define Encoder_1_1 2  //负责中断
 #define Encoder_1_2 24 // 判断正反
 
 #define Encoder_2_1 3
