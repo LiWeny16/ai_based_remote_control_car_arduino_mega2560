@@ -33,9 +33,12 @@ void handle_serial_from_8266(SoftwareSerial* Serial_8266, String* char_sum) {
       // speed_set.speed_set_4 = splitResult.toInt();
 
       if (splitResult.toInt() == 25) {
-        all_direction_movement.stop();
+        // Movement_Conbine_Arg* m_c_a_1;
+        // // splitResult.toInt()
+
+        // m_c_a_1 = all_direction_movement.straight(&speed_set, 10, m_c_a_1);
       } else {
-        all_direction_movement.back(&speed_set, splitResult.toInt());
+        // all_direction_movement.back(&speed_set, splitResult.toInt());
       }
       *char_sum = "";
     }

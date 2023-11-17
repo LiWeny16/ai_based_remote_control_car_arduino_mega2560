@@ -110,7 +110,7 @@ void loop() {
         en_all_arg.en_motor.en_motor_4 ? pid_motor_4.pid_control_motor(motor_port_yh) : (void)1;
       }
 
-      // Serial.println("speed_now: ");
+      Serial.println("speed_now: ");
       // Serial.print(speed_now.speed_1);
       // printBreak();
       // Serial.println("speed_set.speed_set_1: ");

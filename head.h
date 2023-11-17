@@ -116,7 +116,7 @@ public:
     bool en_motor_1,
     bool en_motor_2,
     bool en_motor_3,
-    bool en_motor_4 ) {
+    bool en_motor_4) {
     this->en_motor_all = en_motor_all;
     this->en_motor_1 = en_motor_1;
     this->en_motor_2 = en_motor_2;
@@ -127,7 +127,7 @@ public:
 
 class En_Encoder {
 public:
- bool en_speed_all;
+  bool en_speed_all;
   bool en_speed_1;
   bool en_speed_2;
   bool en_speed_3;
@@ -139,7 +139,6 @@ public:
     bool en_speed_3,
     bool en_speed_4) {
     this->en_speed_all = en_speed_all;
-
     this->en_speed_1 = en_speed_1;
     this->en_speed_2 = en_speed_2;
     this->en_speed_3 = en_speed_3;
@@ -234,24 +233,71 @@ void handle_serial_from_8266(SoftwareSerial* Serial_8266, String* char_sum);
 
 // ******************************//Movement//****************
 
+/**  
+ * @brief 虚类
+ */
 class Base_Movement {
 public:
   virtual void stop(Speed_Set* speed_set) {}
   virtual void stop_use_pid(Speed_Set* speed_set) {}
-  virtual void straight(Speed_Set* speed_set, int speed_rate) {}
-  virtual void back(Speed_Set* speed_set, int speed_rate) {}
-  virtual void left(Speed_Set* speed_set, int speed_rate) {}
-  virtual void right(Speed_Set* speed_set, int speed_rate) {}
+  virtual int* straight(Speed_Set* speed_set, int speed_rate, bool conbine) {}
+  virtual int* back(Speed_Set* speed_set, int speed_rate, bool conbine) {}
+  virtual int* left(Speed_Set* speed_set, int speed_rate, bool conbine) {}
+  virtual int* right(Speed_Set* speed_set, int speed_rate, bool conbine) {}
   virtual void any(Speed_Set* speed_set, float angle, int speed_rate) {}
 };
-
+/**  
+ * @brief 移动合成类
+ * @param err_speed Err_Speed类型
+ */
+class Movement_Conbine_Arg {
+public:
+  int speed_1;
+  int speed_2;
+  int speed_3;
+  int speed_4;
+  Movement_Conbine_Arg* final_speed;
+};
 class All_Direction_Movement : public Base_Movement {
 public:
+  /**  
+ * @brief 全局停止，暂时不考虑使用
+ * @param speed_set Speed_Set*
+ */
   void stop();
-  void stop_use_pid(Speed_Set* speed_set) {}
+  /**  
+ * @brief PID停止，有阻碍移动作用
+ * @param speed_set Speed_Set*
+ */
+  void stop_use_pid(Speed_Set* speed_set);
+  /**  
+ * @brief 运动合成
+ * @param speed_set Speed_Set*
+ * @param speed_rate int
+ * @param m_c_a  Movement_Conbine_Arg*
+ */
+  Movement_Conbine_Arg* straight(Speed_Set* speed_set, int speed_rate, Movement_Conbine_Arg* m_c_a);
+    /**  
+ * @brief 前进
+ * @param speed_set Speed_Set*
+ * @param speed_rate int
+ */
   void straight(Speed_Set* speed_set, int speed_rate);
+  Movement_Conbine_Arg* back(Speed_Set* speed_set, int speed_rate, Movement_Conbine_Arg* m_c_a);
   void back(Speed_Set* speed_set, int speed_rate);
+  Movement_Conbine_Arg* left(Speed_Set* speed_set, int speed_rate, Movement_Conbine_Arg* m_c_a);
+  void left(Speed_Set* speed_set, int speed_rate);
+  Movement_Conbine_Arg* right(Speed_Set* speed_set, int speed_rate, Movement_Conbine_Arg* m_c_a);
+  void right(Speed_Set* speed_set, int speed_rate);
+    /**  
+ * @brief 全向移动
+ * @param speed_set Speed_Set*
+ * @param degree float
+ * @param speed_rate int
+ */
+  void any(Speed_Set* speed_set, float degree,int speed_rate);
 };
+
 extern All_Direction_Movement all_direction_movement;
 
 
