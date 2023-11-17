@@ -13,9 +13,9 @@ En_All en_all_arg;
 
 void init_en() {
   // 电机使能
-  en_motor.init_en_motor(true, true, true, true);
+  en_motor.init_en_motor(true, true, true, true, true);
   // 编码器使能
-  en_encoder.init_en_encoder(true, true, true, true);
+  en_encoder.init_en_encoder(true, true, true, true, true);
   // 全局使能
   en_all_arg.init_en_all(true, en_motor, en_encoder);
 }

@@ -6,26 +6,19 @@
 #include "Arduino.h"
 #include "head.h"
 
-class Base_Movement {
-public:
-  virtual void straight(Speed_Set* speed_set) {}
-  virtual void back(Speed_Set* speed_set) {}
-  virtual void left(Speed_Set* speed_set) {}
-  virtual void right(Speed_Set* speed_set) {}
-};
-
-class All_Direction_Movement : public Base_Movement {
-public:
-  void straight(Speed_Set* speed_set, int speed_rate) {
-    (*speed_set).speed_set_1 = speed_rate;
-    (*speed_set).speed_set_2 = speed_rate;
-    (*speed_set).speed_set_3 = speed_rate;
-    (*speed_set).speed_set_4 = speed_rate;
-  }
-  void back(Speed_Set* speed_set, int speed_rate) {
-    (*speed_set).speed_set_1 = -speed_rate;
-    (*speed_set).speed_set_2 = -speed_rate;
-    (*speed_set).speed_set_3 = -speed_rate;
-    (*speed_set).speed_set_4 = -speed_rate;
-  }
-};
+All_Direction_Movement all_direction_movement;
+void All_Direction_Movement::stop(){
+  en_all_arg.en_motor.en_motor_all = false;
+}
+void All_Direction_Movement::straight(Speed_Set *speed_set, int speed_rate) {
+  (*speed_set).speed_set_1 = speed_rate;
+  (*speed_set).speed_set_2 = speed_rate;
+  (*speed_set).speed_set_3 = speed_rate;
+  (*speed_set).speed_set_4 = speed_rate;
+}
+void All_Direction_Movement::back(Speed_Set *speed_set, int speed_rate) {
+  (*speed_set).speed_set_1 = -speed_rate;
+  (*speed_set).speed_set_2 = -speed_rate;
+  (*speed_set).speed_set_3 = -speed_rate;
+  (*speed_set).speed_set_4 = -speed_rate;
+}

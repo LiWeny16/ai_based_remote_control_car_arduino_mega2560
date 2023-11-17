@@ -65,8 +65,11 @@ void loop() {
       speed_calculate(&count_1, &count_2, &count_3, &count_4, &speed_now);
 
       // 调整速度
-      speed_set.speed_set_1 = 0;
-      speed_set.speed_set_2 = 500;
+      // speed_set.speed_set_1 = 0;
+      // speed_set.speed_set_2 = 0;
+      // speed_set.speed_set_3 = 0;
+      // speed_set.speed_set_4 = 0;
+
       // Motor_Arg my_motor_arg_2(motor_port_yq, 50);
       // motor_control(my_motor_arg_2);
 
@@ -100,10 +103,12 @@ void loop() {
       pid_motor_4.calculate_pid_motor(&err_speed_4);
 
       // 执行PID输出
-      pid_motor_1.pid_control_motor(motor_port_zq);
-      pid_motor_2.pid_control_motor(motor_port_yq);
-      pid_motor_3.pid_control_motor(motor_port_zh);
-      pid_motor_4.pid_control_motor(motor_port_yh);
+      if (en_all_arg.en_motor.en_motor_all) {
+        en_all_arg.en_motor.en_motor_1 ? pid_motor_1.pid_control_motor(motor_port_zq) : (void)1;
+        en_all_arg.en_motor.en_motor_2 ? pid_motor_2.pid_control_motor(motor_port_yq) : (void)1;
+        en_all_arg.en_motor.en_motor_3 ? pid_motor_3.pid_control_motor(motor_port_zh) : (void)1;
+        en_all_arg.en_motor.en_motor_4 ? pid_motor_4.pid_control_motor(motor_port_yh) : (void)1;
+      }
 
       // Serial.println("speed_now: ");
       // Serial.print(speed_now.speed_1);
@@ -127,12 +132,18 @@ void loop() {
       // Serial.print(speed_set.speed_set_1);
 
 
-      Serial.println("V1=");
-      Serial.print(speed_now.speed_1);
-      printBreak();
-      Serial.println("V2=");
-      Serial.print(speed_now.speed_2);
-      printBreak();
+      // Serial.println("V1=");
+      // Serial.print(speed_now.speed_1);
+      // printBreak();
+      // Serial.println("V2=");
+      // Serial.print(speed_now.speed_2);
+      // printBreak();
+      // Serial.println("V3=");
+      // Serial.print(speed_now.speed_3);
+      // printBreak();
+      // Serial.println("V4=");
+      // Serial.print(speed_now.speed_4);
+      // printBreak();
 
 
       // Serial.print(my_test.test);

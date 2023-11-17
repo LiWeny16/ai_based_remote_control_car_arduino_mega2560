@@ -26,9 +26,17 @@ void handle_serial_from_8266(SoftwareSerial* Serial_8266, String* char_sum) {
       // Serial.print(*char_sum);
       String splitResult = (*char_sum).substring(0, (*char_sum).length() - 1);
       Serial.print(splitResult);
-      speed_set.speed_set_1 = splitResult.toInt();
-      speed_set.speed_set_2 = splitResult.toInt();
+      // ip:port = 192.168.173.202/switch?a=1&b=0&c=20
+      // speed_set.speed_set_1 = 0;
+      // speed_set.speed_set_2 = splitResult.toInt();
+      // speed_set.speed_set_3 = splitResult.toInt();
+      // speed_set.speed_set_4 = splitResult.toInt();
 
+      if (splitResult.toInt() == 25) {
+        all_direction_movement.stop();
+      } else {
+        all_direction_movement.back(&speed_set, splitResult.toInt());
+      }
       *char_sum = "";
     }
   }

@@ -106,14 +106,18 @@ float use_ultrasonic();
 
 class En_Motor {
 public:
+  bool en_motor_all;
   bool en_motor_1;
   bool en_motor_2;
   bool en_motor_3;
   bool en_motor_4;
-  void init_en_motor(bool en_motor_1,
-                     bool en_motor_2,
-                     bool en_motor_3,
-                     bool en_motor_4) {
+  void init_en_motor(
+    bool en_motor_all,
+    bool en_motor_1,
+    bool en_motor_2,
+    bool en_motor_3,
+    bool en_motor_4 ) {
+    this->en_motor_all = en_motor_all;
     this->en_motor_1 = en_motor_1;
     this->en_motor_2 = en_motor_2;
     this->en_motor_3 = en_motor_3;
@@ -123,15 +127,19 @@ public:
 
 class En_Encoder {
 public:
+ bool en_speed_all;
   bool en_speed_1;
   bool en_speed_2;
   bool en_speed_3;
   bool en_speed_4;
   void init_en_encoder(
+    bool en_speed_all,
     bool en_speed_1,
     bool en_speed_2,
     bool en_speed_3,
     bool en_speed_4) {
+    this->en_speed_all = en_speed_all;
+
     this->en_speed_1 = en_speed_1;
     this->en_speed_2 = en_speed_2;
     this->en_speed_3 = en_speed_3;
@@ -222,8 +230,31 @@ extern PID_Motor pid_motor_4;
 
 // ******************************//Serial//****************
 extern SoftwareSerial Serial_8266;
-
 void handle_serial_from_8266(SoftwareSerial* Serial_8266, String* char_sum);
+
+// ******************************//Movement//****************
+
+class Base_Movement {
+public:
+  virtual void stop(Speed_Set* speed_set) {}
+  virtual void stop_use_pid(Speed_Set* speed_set) {}
+  virtual void straight(Speed_Set* speed_set, int speed_rate) {}
+  virtual void back(Speed_Set* speed_set, int speed_rate) {}
+  virtual void left(Speed_Set* speed_set, int speed_rate) {}
+  virtual void right(Speed_Set* speed_set, int speed_rate) {}
+  virtual void any(Speed_Set* speed_set, float angle, int speed_rate) {}
+};
+
+class All_Direction_Movement : public Base_Movement {
+public:
+  void stop();
+  void stop_use_pid(Speed_Set* speed_set) {}
+  void straight(Speed_Set* speed_set, int speed_rate);
+  void back(Speed_Set* speed_set, int speed_rate);
+};
+extern All_Direction_Movement all_direction_movement;
+
+
 // ******************************//Others//****************
 
 // @ test variable
