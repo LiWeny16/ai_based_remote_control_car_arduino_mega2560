@@ -66,7 +66,7 @@ void loop() {
 
       // 调整速度
       // speed_set.speed_set_1 = 0;
-      // speed_set.speed_set_2 = 0;
+      // speed_set.speed_set_2 = 10;
       // speed_set.speed_set_3 = 0;
       // speed_set.speed_set_4 = 0;
 
@@ -145,6 +145,9 @@ void loop() {
       // Serial.print(speed_now.speed_4);
       // printBreak();
 
+      // Serial.println("count_2=");
+      // Serial.print(count_2);
+      // printBreak();
 
       // Serial.print(my_test.test);
       // Serial.println("m/s");

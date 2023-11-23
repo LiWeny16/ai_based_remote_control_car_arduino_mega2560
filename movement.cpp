@@ -65,28 +65,27 @@ void All_Direction_Movement::left(Speed_Set* speed_set, int speed_rate) {
   (*speed_set).speed_set_4 = speed_rate;
 }
 Movement_Conbine_Arg* All_Direction_Movement::right(Speed_Set* speed_set, int speed_rate, Movement_Conbine_Arg* m_c_a) {
-  (*m_c_a).speed_1 = speed_rate;
+  (*m_c_a).speed_1 = -speed_rate;
   (*m_c_a).speed_2 = speed_rate;
   (*m_c_a).speed_3 = speed_rate;
-  (*m_c_a).speed_4 = speed_rate;
+  (*m_c_a).speed_4 = -speed_rate;
   return m_c_a;
 }
 void All_Direction_Movement::right(Speed_Set* speed_set, int speed_rate) {
-  (*speed_set).speed_set_1 = speed_rate;
+  (*speed_set).speed_set_1 = -speed_rate;
   (*speed_set).speed_set_2 = speed_rate;
   (*speed_set).speed_set_3 = speed_rate;
-  (*speed_set).speed_set_4 = speed_rate;
+  (*speed_set).speed_set_4 = -speed_rate;
 }
 
 void All_Direction_Movement::any(Speed_Set* speed_set, float degree, int speed_rate) {
   // 0-90°
   if (degree > 0 && degree < 90) {
-    Movement_Conbine_Arg* m_c_a_1;
-    Movement_Conbine_Arg* m_c_a_2;
+    Movement_Conbine_Arg* m_c_a_y;
+    Movement_Conbine_Arg* m_c_a_x;
     float rad = radians(degree);
-    m_c_a_1 = all_direction_movement.straight(speed_set, speed_rate * cos(rad), m_c_a_1);
-    m_c_a_2 = all_direction_movement.right(speed_set, speed_rate * sin(rad), m_c_a_2);
-    // (*m_c_a_1).final_speed->speed_1=
+    m_c_a_y = all_direction_movement.straight(speed_set, speed_rate * cos(rad), m_c_a_y);
+    m_c_a_x = all_direction_movement.right(speed_set, speed_rate * sin(rad), m_c_a_x);
   } else if (degree > 90) {
   }
 }
