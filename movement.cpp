@@ -77,15 +77,51 @@ void All_Direction_Movement::right(Speed_Set* speed_set, int speed_rate) {
   (*speed_set).speed_set_3 = speed_rate;
   (*speed_set).speed_set_4 = -speed_rate;
 }
+void All_Direction_Movement::use_movement_arg(Speed_Set* speed_set, Movement_Conbine_Arg* m_c_a_final) {
+  (*speed_set).speed_set_1 = (*m_c_a_final).speed_1;
+  (*speed_set).speed_set_2 = (*m_c_a_final).speed_2;
+  (*speed_set).speed_set_3 = (*m_c_a_final).speed_3;
+  (*speed_set).speed_set_4 = (*m_c_a_final).speed_4;
+}
+Movement_Conbine_Arg* All_Direction_Movement::conbine_movement_arg(Movement_Conbine_Arg* m_c_a_final, Movement_Conbine_Arg* m_c_a_x, Movement_Conbine_Arg* m_c_a_y) {
+
+  (*m_c_a_final).speed_1 = (*m_c_a_x).speed_1 + (*m_c_a_y).speed_1;
+  (*m_c_a_final).speed_2 = (*m_c_a_x).speed_2 + (*m_c_a_y).speed_2;
+  (*m_c_a_final).speed_3 = (*m_c_a_x).speed_3 + (*m_c_a_y).speed_3;
+  (*m_c_a_final).speed_4 = (*m_c_a_x).speed_4 + (*m_c_a_y).speed_4;
+  return m_c_a_final;
+}
 
 void All_Direction_Movement::any(Speed_Set* speed_set, float degree, int speed_rate) {
-  // 0-90°
-  if (degree > 0 && degree < 90) {
-    Movement_Conbine_Arg* m_c_a_y;
-    Movement_Conbine_Arg* m_c_a_x;
+  // 0-360°
+  if (degree >= 0 && degree <= 360) {
+    /**
+    *@notes:如果不用new 的话,执行conbine的时候m_c_a_xxx会被销毁，所以必须用new来保证不被销毁, 但是注意要在结束释放,不然会内存泄漏！
+    */
+    Movement_Conbine_Arg* m_c_a_y = new Movement_Conbine_Arg;
+    Movement_Conbine_Arg* m_c_a_x = new Movement_Conbine_Arg;
+    Movement_Conbine_Arg* m_c_a_final = new Movement_Conbine_Arg;
     float rad = radians(degree);
-    m_c_a_y = all_direction_movement.straight(speed_set, speed_rate * cos(rad), m_c_a_y);
-    m_c_a_x = all_direction_movement.right(speed_set, speed_rate * sin(rad), m_c_a_x);
-  } else if (degree > 90) {
+    m_c_a_y = all_direction_movement.straight(speed_set, (int)(speed_rate * sin(rad)), m_c_a_y);
+    m_c_a_x = all_direction_movement.right(speed_set, (int)(speed_rate * cos(rad)), m_c_a_x);
+    // _print((*m_c_a_y).speed_2);
+    // printBreak();
+    // _print((*m_c_a_x).speed_2);
+    // printBreak();
+
+    // _print((*m_c_a_y).speed_4);
+    // printBreak();
+    // _print((*m_c_a_x).speed_4);
+    // printBreak();
+
+    // _print((int)(speed_rate * cos(rad)));
+    m_c_a_final = this->conbine_movement_arg(m_c_a_final, m_c_a_x, m_c_a_y);
+    // _print((*m_c_a_final).speed_4);
+    // printBreak();
+
+    this->use_movement_arg(speed_set, m_c_a_final);
+    delete m_c_a_x;
+    delete m_c_a_y;
+    delete m_c_a_final;
   }
 }

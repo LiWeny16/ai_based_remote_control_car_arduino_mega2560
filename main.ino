@@ -45,7 +45,7 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(Encoder_2_1), interrupt_sum_encoder_2, CHANGE);  //当电平发生改变时触发中断函数
     attachInterrupt(digitalPinToInterrupt(Encoder_3_1), interrupt_sum_encoder_3, CHANGE);  //当电平发生改变时触发中断函数
     attachInterrupt(digitalPinToInterrupt(Encoder_4_1), interrupt_sum_encoder_4, CHANGE);  //当电平发生改变时触发中断函数
-    delay(3000);
+    delay(1000);
   }
 }
 
@@ -85,15 +85,15 @@ void loop() {
 
 
       pid_motor_2.P = 0;
-      pid_motor_2.I = 0.3;
+      pid_motor_2.I = 0.2;
       pid_motor_2.D = 0;
 
       pid_motor_3.P = 0;
-      pid_motor_3.I = 0.3;
+      pid_motor_3.I = 0.2;
       pid_motor_3.D = 0;
 
       pid_motor_4.P = 0;
-      pid_motor_4.I = 0.3;
+      pid_motor_4.I = 0.2;
       pid_motor_4.D = 0;
 
       // 计算PID修正量
@@ -110,7 +110,7 @@ void loop() {
         en_all_arg.en_motor.en_motor_4 ? pid_motor_4.pid_control_motor(motor_port_yh) : (void)1;
       }
 
-      Serial.println("speed_now: ");
+      // Serial.println("speed_now: ");
       // Serial.print(speed_now.speed_1);
       // printBreak();
       // Serial.println("speed_set.speed_set_1: ");

@@ -23,6 +23,16 @@ void init_en() {
 void printBreak() {
   Serial.println("\n");
 }
+void _print(int a){
+  Serial.print(a);
+}
+void _print(float a){
+  Serial.print(a);
+}
+void _println(int a){
+  Serial.println(a);
+}
+
 
 void init_test() {
   my_test.init_test(1, 1.123);

@@ -24,22 +24,24 @@ void handle_serial_from_8266(SoftwareSerial* Serial_8266, String* char_sum) {
       // string1_last = string1;
       // string1 = char_sum;
       // Serial.print(*char_sum);
+      
+      /**
+      * @note 把最后一个"?"去掉
+      */
       String splitResult = (*char_sum).substring(0, (*char_sum).length() - 1);
-      Serial.print(splitResult);
+      // Serial.print(splitResult);
       // ip:port = 192.168.173.202/switch?a=1&b=0&c=20
       // speed_set.speed_set_1 = 0;
       // speed_set.speed_set_2 = splitResult.toInt();
       // speed_set.speed_set_3 = splitResult.toInt();
       // speed_set.speed_set_4 = splitResult.toInt();
 
-      if (splitResult.toInt() == 25) {
-        Movement_Conbine_Arg* m_c_a_1;
-        // // splitResult.toInt()
-
-        m_c_a_1 = all_direction_movement.straight(&speed_set, 10, m_c_a_1);
-      } else {
-        all_direction_movement.back(&speed_set, splitResult.toInt());
-      }
+      // if (splitResult.toInt() == 25) {
+      //   //  all_direction_movement.straight(&speed_set, 10, m_c_a_1);
+      //   all_direction_movement.any(&speed_set, 45+180, 10);
+      // } else {
+      //   all_direction_movement.straight(&speed_set, splitResult.toInt());
+      // }
       *char_sum = "";
     }
   }

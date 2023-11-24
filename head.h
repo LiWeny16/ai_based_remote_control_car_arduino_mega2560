@@ -277,7 +277,7 @@ public:
  * @param m_c_a  Movement_Conbine_Arg*
  */
   Movement_Conbine_Arg* straight(Speed_Set* speed_set, int speed_rate, Movement_Conbine_Arg* m_c_a);
-    /**  
+  /**  
  * @brief 前进
  * @param speed_set Speed_Set*
  * @param speed_rate int
@@ -289,13 +289,21 @@ public:
   void left(Speed_Set* speed_set, int speed_rate);
   Movement_Conbine_Arg* right(Speed_Set* speed_set, int speed_rate, Movement_Conbine_Arg* m_c_a);
   void right(Speed_Set* speed_set, int speed_rate);
-    /**  
+  /**  
  * @brief 全向移动
  * @param speed_set Speed_Set*
  * @param degree float
  * @param speed_rate int
  */
-  void any(Speed_Set* speed_set, float degree,int speed_rate);
+  void any(Speed_Set* speed_set, float degree, int speed_rate);
+  /**  
+ * @brief 结合运动参数
+ */
+  Movement_Conbine_Arg* conbine_movement_arg(Movement_Conbine_Arg* m_c_a_final, Movement_Conbine_Arg* m_c_a_x, Movement_Conbine_Arg* m_c_a_);
+  /**  
+ * @brief 使用运动参数来控制
+ */
+  void use_movement_arg(Speed_Set* speed_set, Movement_Conbine_Arg* m_c_a_final);
 };
 
 extern All_Direction_Movement all_direction_movement;
@@ -321,6 +329,8 @@ extern Test my_test;
 
 void init_test();
 void all_init();
+void _print(int a);
+void _print(float a);
 void printBreak();
 void init_serial(unsigned long baud);
 #endif
