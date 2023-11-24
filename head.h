@@ -240,23 +240,23 @@ class Base_Movement {
 public:
   virtual void stop(Speed_Set* speed_set) {}
   virtual void stop_use_pid(Speed_Set* speed_set) {}
-  virtual int* straight(Speed_Set* speed_set, int speed_rate, bool conbine) {}
-  virtual int* back(Speed_Set* speed_set, int speed_rate, bool conbine) {}
-  virtual int* left(Speed_Set* speed_set, int speed_rate, bool conbine) {}
-  virtual int* right(Speed_Set* speed_set, int speed_rate, bool conbine) {}
+  virtual int* straight(Speed_Set* speed_set, int speed_rate, bool combine) {}
+  virtual int* back(Speed_Set* speed_set, int speed_rate, bool combine) {}
+  virtual int* left(Speed_Set* speed_set, int speed_rate, bool combine) {}
+  virtual int* right(Speed_Set* speed_set, int speed_rate, bool combine) {}
   virtual void any(Speed_Set* speed_set, float angle, int speed_rate) {}
 };
 /**  
  * @brief 移动合成类
  * @param err_speed Err_Speed类型
  */
-class Movement_Conbine_Arg {
+class Movement_Combine_Arg {
 public:
   int speed_1;
   int speed_2;
   int speed_3;
   int speed_4;
-  Movement_Conbine_Arg* final_speed;
+  Movement_Combine_Arg* final_speed;
 };
 class All_Direction_Movement : public Base_Movement {
 public:
@@ -274,20 +274,20 @@ public:
  * @brief 运动合成
  * @param speed_set Speed_Set*
  * @param speed_rate int
- * @param m_c_a  Movement_Conbine_Arg*
+ * @param m_c_a  Movement_Combine_Arg*
  */
-  Movement_Conbine_Arg* straight(Speed_Set* speed_set, int speed_rate, Movement_Conbine_Arg* m_c_a);
+  Movement_Combine_Arg* straight(Speed_Set* speed_set, int speed_rate, Movement_Combine_Arg* m_c_a);
   /**  
  * @brief 前进
  * @param speed_set Speed_Set*
  * @param speed_rate int
  */
   void straight(Speed_Set* speed_set, int speed_rate);
-  Movement_Conbine_Arg* back(Speed_Set* speed_set, int speed_rate, Movement_Conbine_Arg* m_c_a);
+  Movement_Combine_Arg* back(Speed_Set* speed_set, int speed_rate, Movement_Combine_Arg* m_c_a);
   void back(Speed_Set* speed_set, int speed_rate);
-  Movement_Conbine_Arg* left(Speed_Set* speed_set, int speed_rate, Movement_Conbine_Arg* m_c_a);
+  Movement_Combine_Arg* left(Speed_Set* speed_set, int speed_rate, Movement_Combine_Arg* m_c_a);
   void left(Speed_Set* speed_set, int speed_rate);
-  Movement_Conbine_Arg* right(Speed_Set* speed_set, int speed_rate, Movement_Conbine_Arg* m_c_a);
+  Movement_Combine_Arg* right(Speed_Set* speed_set, int speed_rate, Movement_Combine_Arg* m_c_a);
   void right(Speed_Set* speed_set, int speed_rate);
   /**  
  * @brief 全向移动
@@ -299,11 +299,11 @@ public:
   /**  
  * @brief 结合运动参数
  */
-  Movement_Conbine_Arg* conbine_movement_arg(Movement_Conbine_Arg* m_c_a_final, Movement_Conbine_Arg* m_c_a_x, Movement_Conbine_Arg* m_c_a_);
+  Movement_Combine_Arg* combine_movement_arg(Movement_Combine_Arg* m_c_a_final, Movement_Combine_Arg* m_c_a_x, Movement_Combine_Arg* m_c_a_);
   /**  
  * @brief 使用运动参数来控制
  */
-  void use_movement_arg(Speed_Set* speed_set, Movement_Conbine_Arg* m_c_a_final);
+  void use_movement_arg(Speed_Set* speed_set, Movement_Combine_Arg* m_c_a_final);
 };
 
 extern All_Direction_Movement all_direction_movement;

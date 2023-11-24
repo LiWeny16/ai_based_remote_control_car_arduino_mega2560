@@ -23,13 +23,13 @@ void init_en() {
 void printBreak() {
   Serial.println("\n");
 }
-void _print(int a){
+void _print(int a) {
   Serial.print(a);
 }
-void _print(float a){
+void _print(float a) {
   Serial.print(a);
 }
-void _println(int a){
+void _println(int a) {
   Serial.println(a);
 }
 
@@ -37,6 +37,14 @@ void _println(int a){
 void init_test() {
   my_test.init_test(1, 1.123);
 }
+
+// void split_string() {
+//   p = strtok(input, ",");  // 第一次调用 strtok
+//   while (p != NULL) {       // 当 p 不为空时，继续拆分
+//     Serial.println(p);      // 打印每个子字符串
+//     p = strtok(NULL, ",");  // 再次调用 strtok
+//   }
+// }
 
 
 // void myPrint(const String &s){
