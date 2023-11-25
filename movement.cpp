@@ -94,6 +94,7 @@ Movement_Combine_Arg* All_Direction_Movement::combine_movement_arg(Movement_Comb
 }
 
 void All_Direction_Movement::any(Speed_Set* speed_set, float degree, int speed_rate) {
+  
   // 0-360°
   if (degree >= 0 && degree <= 360) {
     /**

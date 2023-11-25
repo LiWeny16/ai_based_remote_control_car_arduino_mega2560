@@ -229,6 +229,17 @@ extern PID_Motor pid_motor_4;
 
 // ******************************//Serial//****************
 extern SoftwareSerial Serial_8266;
+class Receive_Arg_Movement {
+public:
+  char arg_1;
+  char arg_2;
+};
+class Receive_Arg_Other {
+public:
+  char arg_1;
+  char arg_2;
+  char arg_3;
+};
 void handle_serial_from_8266(SoftwareSerial* Serial_8266, String* char_sum);
 
 // ******************************//Movement//****************
