@@ -1,3 +1,4 @@
+#line 1 "C:\\Learning\\sample\\Arduino\\FYP\\Mega 2560\\main\\motor.cpp"
 // @开源协议 GPL3.0
 // @作者 Bigonion
 // @NameSpace bigonion.cn

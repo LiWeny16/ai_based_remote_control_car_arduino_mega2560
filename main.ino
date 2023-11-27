@@ -4,6 +4,8 @@
 // @github https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560
 
 #include "head.h"
+// #include "Arduino.h"
+// #include "C:/Users/Onion/AppData/Local/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/avr/include/avr/iom16u2.h"
 float ultra_distance;  //距离变量
 
 volatile int count_1 = 0;
@@ -52,14 +54,16 @@ void setup() {
 void loop() {
   // 使能
   if (en_all_arg.en_all) {
+    print_2323();
     // 处理串口,无延时
     handle_serial_from_8266(&Serial_8266, &char_sum);
 
     unsigned long current_time = millis();  // 获取当前时间
     // 判断是否达到延迟时间间隔
     if (current_time - speed_previous_time >= speed_sample_interval) {
+      Serial.print("asd");
 
-      // ultra_distance = use_ultrasonic();
+      ultra_distance = use_ultrasonic();
 
       // 计算速度,写入speed_now
       speed_calculate(&count_1, &count_2, &count_3, &count_4, &speed_now);
