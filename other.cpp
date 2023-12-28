@@ -29,6 +29,9 @@ void _print(int a) {
 void _print(float a) {
   Serial.print(a);
 }
+void _print(char a) {
+  Serial.print(a);
+}
 void _println(int a) {
   Serial.println(a);
 }
@@ -36,6 +39,10 @@ void _println(int a) {
 
 void init_test() {
   my_test.init_test(1, 1.123);
+}
+
+int sb(){
+  return 0;
 }
 
 // void split_string() {

@@ -91,7 +91,7 @@ void speed_calculate(int* count_1, int* count_2, Speed* speed_now) {
   }
 }
 // 重载，方便调试
-void speed_calculate(int* count_1, int* count_2, int* count_3, int* count_4, Speed* speed_now) {
+void speed_calculate(volatile int* count_1,volatile int* count_2,volatile int* count_3,volatile int* count_4, Speed* speed_now) {
   encoder_time = millis();                         //以毫秒为单位，计算当前时间
   if (abs(encoder_time - encoder_time_old) >= 20)  // 如果计时时间已达20ms秒
   {

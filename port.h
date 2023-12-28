@@ -14,7 +14,7 @@
 
 // @ PWM Port def
 #define Motor_PWM_1_1 4
-#define Motor_PWM_1_2 5
+#define Motor_PWM_1_2 5 
 
 #define Motor_PWM_2_1 6
 #define Motor_PWM_2_2 7

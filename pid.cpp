@@ -20,6 +20,8 @@ int PID_Motor::constrain_motor_out(int motor_out) {
 // @很奇怪，不能用inline这里
 void PID_Motor::calculate_pid_motor(Err_Speed* err_speed) {
   this->motor_out_pid = (int)(this->P * ((*err_speed).err_speed_differential_1) + this->I * ((*err_speed).err_speed_now) + this->D * ((*err_speed).err_speed_differential_2));
+  // _print(this->motor_out_pid);
+  // printBreak();
 }
 
 void PID_Motor::pid_control_motor(Motor_Port motor_port) {

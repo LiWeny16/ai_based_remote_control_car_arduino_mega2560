@@ -1,5 +1,15 @@
 {
   // "C_Cpp.intelliSenseEngine": "Tag Parser",
+  // "arduino.useArduinoCli": true,
+  "arduino.disableIntelliSenseAutoGen": true,
+  "cSpell.enableFiletypes": [
+    "!c"
+  ],
+  "cSpell.words": [
+    "Bigonion",
+    "EIFR"
+  ],
   "arduino.useArduinoCli": true,
+  // "arduino.path": "C:/Learning/Arduino-IDE/arduino-cli",
   // "C_Cpp.default.compilerPath":""
 }

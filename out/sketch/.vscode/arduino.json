@@ -1,9 +1,0 @@
-#line 1 "C:\\Learning\\sample\\Arduino\\FYP\\Mega 2560\\main\\.vscode\\arduino.json"
-{
-    "configuration": "cpu=atmega2560",
-    "board": "arduino:avr:mega",
-    "programmer": "arduinoisp",
-    "port": "COM15",
-    "sketch": "main.ino",
-    "output": "out"
-}
