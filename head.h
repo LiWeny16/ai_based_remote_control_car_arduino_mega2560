@@ -11,19 +11,16 @@
 
 #define MAX_PWM_ABS 170
 // ******************************//Motor//****************
-enum DIR
-{
-  FOR, // Forward;
-  BACK // Backward;
+enum DIR {
+  FOR,  // Forward;
+  BACK  // Backward;
 };
 
-class Motor_Port
-{
+class Motor_Port {
 public:
   int p1;
   int p2;
-  void motor_port_init(int p1, int p2)
-  {
+  void motor_port_init(int p1, int p2) {
     this->p1 = p1;
     this->p2 = p2;
   }
@@ -32,14 +29,12 @@ extern Motor_Port motor_port_zq;
 extern Motor_Port motor_port_yq;
 extern Motor_Port motor_port_zh;
 extern Motor_Port motor_port_yh;
-class Motor_Arg
-{
+class Motor_Arg {
 public:
   Motor_Port port;
   // DIR dir;
   int pwm;
-  Motor_Arg(Motor_Port port, int pwm)
-  {
+  Motor_Arg(Motor_Port port, int pwm) {
     this->port = port;
     // this->dir = dir;
     this->pwm = pwm;
@@ -51,22 +46,19 @@ void motor_control(Motor_Arg motor_arg);
 
 // ******************************//Encoder//****************
 // extern int count;
-extern int encoder_time; // 时间标记
+extern int encoder_time;  // 时间标记
 extern int encoder_time_old;
 
-class Speed
-{
+class Speed {
 public:
   int speed_1;
   int speed_2;
   int speed_3;
   int speed_4;
-  float speed_transform_to_real(int speed_1)
-  {
+  float speed_transform_to_real(int speed_1) {
     return (float)speed_1 / 16;
   }
-  void speed_init(int speed_1, int speed_2, int speed_3, int speed_4)
-  {
+  void speed_init(int speed_1, int speed_2, int speed_3, int speed_4) {
     this->speed_1 = speed_1;
     this->speed_2 = speed_2;
     this->speed_3 = speed_3;
@@ -77,15 +69,13 @@ public:
 /**
  @description 四个轮子的速度设定
 */
-class Speed_Set
-{
+class Speed_Set {
 public:
   int speed_set_1;
   int speed_set_2;
   int speed_set_3;
   int speed_set_4;
-  void speed_set_init(int speed_1, int speed_2, int speed_3, int speed_4)
-  {
+  void speed_set_init(int speed_1, int speed_2, int speed_3, int speed_4) {
     this->speed_set_1 = speed_1;
     this->speed_set_2 = speed_2;
     this->speed_set_3 = speed_3;
@@ -114,8 +104,7 @@ float use_ultrasonic();
 
 // ******************************//Enable flag//****************
 
-class En_Motor
-{
+class En_Motor {
 public:
   bool en_motor_all;
   bool en_motor_1;
@@ -123,12 +112,11 @@ public:
   bool en_motor_3;
   bool en_motor_4;
   void init_en_motor(
-      bool en_motor_all,
-      bool en_motor_1,
-      bool en_motor_2,
-      bool en_motor_3,
-      bool en_motor_4)
-  {
+    bool en_motor_all,
+    bool en_motor_1,
+    bool en_motor_2,
+    bool en_motor_3,
+    bool en_motor_4) {
     this->en_motor_all = en_motor_all;
     this->en_motor_1 = en_motor_1;
     this->en_motor_2 = en_motor_2;
@@ -137,8 +125,7 @@ public:
   }
 };
 
-class En_Encoder
-{
+class En_Encoder {
 public:
   bool en_speed_all;
   bool en_speed_1;
@@ -146,12 +133,11 @@ public:
   bool en_speed_3;
   bool en_speed_4;
   void init_en_encoder(
-      bool en_speed_all,
-      bool en_speed_1,
-      bool en_speed_2,
-      bool en_speed_3,
-      bool en_speed_4)
-  {
+    bool en_speed_all,
+    bool en_speed_1,
+    bool en_speed_2,
+    bool en_speed_3,
+    bool en_speed_4) {
     this->en_speed_all = en_speed_all;
     this->en_speed_1 = en_speed_1;
     this->en_speed_2 = en_speed_2;
@@ -160,14 +146,12 @@ public:
   }
 };
 
-class En_All
-{
+class En_All {
 public:
   bool en_all;
   En_Motor en_motor;
   En_Encoder en_encoder;
-  void init_en_all(bool en_all, En_Motor en_motor, En_Encoder en_encoder)
-  {
+  void init_en_all(bool en_all, En_Motor en_motor, En_Encoder en_encoder) {
     this->en_all = en_all;
     this->en_motor = en_motor;
     this->en_encoder = en_encoder;
@@ -178,8 +162,7 @@ void init_en();
 
 // ******************************//PID//****************
 
-class Err_Speed
-{
+class Err_Speed {
 public:
   int err_speed_now;
   int err_speed_last;
@@ -190,8 +173,7 @@ public:
                       int err_last,
                       int err_past,
                       int err_speed_differential_1,
-                      int err_speed_differential_2)
-  {
+                      int err_speed_differential_2) {
     this->err_speed_now = err;
     this->err_speed_last = err_last;
     this->err_speed_past = err_past;
@@ -209,8 +191,7 @@ extern Err_Speed err_speed_1;
 extern Err_Speed err_speed_2;
 extern Err_Speed err_speed_3;
 extern Err_Speed err_speed_4;
-class PID_Motor
-{
+class PID_Motor {
 public:
   float P;
   float I;
@@ -230,8 +211,7 @@ public:
                 float D,
                 int motor_out_pid,
                 int motor_out_now,
-                int motor_out_last)
-  {
+                int motor_out_last) {
     this->P = P;
     this->I = I;
     this->D = D;
@@ -248,28 +228,27 @@ extern PID_Motor pid_motor_4;
 
 // ******************************//Serial//****************
 extern SoftwareSerial Serial_8266;
-class Receive_Arg_Movement
-{
+extern bool SerialLock;
+class Receive_Arg_Movement {
 public:
-  char* arg_1;
-  char* arg_2;
+  char *arg_1;
+  char *arg_2;
 };
-class Receive_Arg_Other
-{
+class Receive_Arg_Other {
 public:
   char arg_1;
   char arg_2;
   char arg_3;
 };
-void handle_serial_from_8266(SoftwareSerial *Serial_8266, String *char_sum);
+void handle_serial_from_8266(SoftwareSerial *Serial_8266, String *char_sum, Speed *speed_now);
+void handle_serial_to_8266(SoftwareSerial *Serial_8266, Speed *speed_now);
 
 // ******************************//Movement//****************
 
 /**
  * @brief 虚类
  */
-class Base_Movement
-{
+class Base_Movement {
 public:
   virtual void stop(Speed_Set *speed_set) {}
   virtual void stop_use_pid(Speed_Set *speed_set) {}
@@ -283,8 +262,7 @@ public:
  * @brief 移动合成类
  * @param err_speed Err_Speed类型
  */
-class Movement_Combine_Arg
-{
+class Movement_Combine_Arg {
 public:
   int speed_1;
   int speed_2;
@@ -292,8 +270,7 @@ public:
   int speed_4;
   Movement_Combine_Arg *final_speed;
 };
-class All_Direction_Movement : public Base_Movement
-{
+class All_Direction_Movement : public Base_Movement {
 public:
   /**
    * @brief 全局停止，暂时不考虑使用
@@ -324,6 +301,8 @@ public:
   void left(Speed_Set *speed_set, int speed_rate);
   Movement_Combine_Arg *right(Speed_Set *speed_set, int speed_rate, Movement_Combine_Arg *m_c_a);
   void right(Speed_Set *speed_set, int speed_rate);
+  void rotate_clockwise(Speed_Set *speed_set, int speed_rate);
+  void rotate_anti_clockwise(Speed_Set *speed_set, int speed_rate);
   /**
    * @brief 全向移动
    * @param speed_set Speed_Set*
@@ -349,13 +328,11 @@ extern All_Direction_Movement all_direction_movement;
 
 // extern volatile int global_temp;
 
-class Test
-{
+class Test {
 public:
   int test = 0;
   float test_f = 0.0;
-  void init_test(int test, float test_f)
-  {
+  void init_test(int test, float test_f) {
     this->test = test;
     this->test_f = test_f;
   }

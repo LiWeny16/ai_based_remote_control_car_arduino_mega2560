@@ -7,36 +7,59 @@
 #include "head.h"
 
 SoftwareSerial Serial_8266(Soft_Serial_1_RX, Soft_Serial_1_TX);
+bool SerialLock;
 
 void init_serial(unsigned long baud) {
   Serial.begin(baud);
   Serial.println("Mega 2560 is ready!");
   Serial_8266.begin(9600);
+  SerialLock = true;
 }
-void handle_serial_from_8266(SoftwareSerial *Serial_8266, String *char_sum) {
+void handle_serial_to_8266(SoftwareSerial *Serial_8266, Speed *speed_now) {
+  if (!SerialLock) {
+    (*Serial_8266).print((*speed_now).speed_1);
+    (*Serial_8266).print("|");
+    (*Serial_8266).print((*speed_now).speed_2);
+    (*Serial_8266).print("|");
+    (*Serial_8266).print((*speed_now).speed_3);
+    (*Serial_8266).print("|");
+    (*Serial_8266).print((*speed_now).speed_4);
+    (*Serial_8266).print("?");
+  }
+}
+void handle_serial_from_8266(SoftwareSerial *Serial_8266, String *char_sum, Speed *speed_now) {
+
   if ((*Serial_8266).available() > 0)  // 串口接收到数据
   {
+    // 锁住
+    SerialLock = true;
     Receive_Arg_Movement *receive_arg_movement = new Receive_Arg_Movement;
-    // Receive_Arg_Movement *receive_arg_movement2 = new Receive_Arg_Movement;
+    Receive_Arg_Movement *receive_arg_movement2 = new Receive_Arg_Movement;
     char b = (*Serial_8266).read();
     // Serial.println((int)'0');
-    // Serial.println((int)b);
-    if (b >= 33)
-      *char_sum += b;
+    // Serial.print(b);
+    // if (b >= 32)
+    (*char_sum) += b;
     // else
     // 13,0
     // Serial.println((int)b);
     if (b == '?') {
-      // string1_past = string1_last;
-      // string1_last = string1;
-      // string1 = char_sum;
-      // Serial.print(*char_sum);
+      SerialLock = false;
+      // (*Serial_8266).print((*speed_now).speed_1);
+      // (*Serial_8266).print("|");
+      // (*Serial_8266).print((*speed_now).speed_2);
+      // (*Serial_8266).print("|");
+      // (*Serial_8266).print((*speed_now).speed_3);
+      // (*Serial_8266).print("|");
+      // (*Serial_8266).print((*speed_now).speed_4);
+      // (*Serial_8266).print("?");
       /**
        * @note 把最后一个"?"去掉
        */
       String *split_result = new String;
       // Serial.println(*char_sum);
       (*split_result) = (*char_sum).substring(0, (*char_sum).length() - 1);
+      // Serial.println(*split_result);
       // String control_type = *(&split_result);
       // char* choice = new char;
       const char choice = (*split_result)[0];
@@ -68,10 +91,18 @@ void handle_serial_from_8266(SoftwareSerial *Serial_8266, String *char_sum) {
             }
             p = strtok(NULL, ",");
           }
-          (*degree) = atoi((*receive_arg_movement).arg_1);
-          (*speed_rate) = atoi((*receive_arg_movement).arg_2);
-          // Serial.println(*degree);
-          // Serial.println(*speed_rate);
+          (*degree) = (int)atoi((*receive_arg_movement).arg_1);
+          if ((*degree) > 360 || (*degree) < 0) {
+            (*degree) = 0;
+          }
+          (*speed_rate) = (int)atoi((*receive_arg_movement).arg_2);
+          if ((*speed_rate) > 30 || (*speed_rate) < 0) {
+            (*speed_rate) = 0;
+          }
+          // Serial.print("degree:");
+          // Serial.println((int)*degree);
+          // Serial.print("rate:");
+          // Serial.println((int)*speed_rate);
           all_direction_movement.any(&speed_set, (*degree), (*speed_rate));
           // 释放内存
           delete[] myCharArray;
@@ -79,38 +110,13 @@ void handle_serial_from_8266(SoftwareSerial *Serial_8266, String *char_sum) {
           delete speed_rate;
           break;
         case '2':
-          // 获取字符串的长度
-          // const short _length2 = (*split_result).length();
-          // int * = new int;
-          // int *speed_rate = new int;
-
-          // // // 创建动态大小的字符数组
-          // char *myCharArray2 = new char[_length2 + 1];  // 需要额外的空间来存储结尾的空字符 '\0'
-          // // 将字符串复制到字符数组中
-          // (*split_result).toCharArray(myCharArray2, _length2 + 1);
-          // char *p = strtok(myCharArray2, ",");
-          // for (int i = 0; p != NULL; i++) {
-          //   if (i > 0) {
-          //     /**
-          //    * @note 角度
-          //    * */
-          //     i == 1 ? ((receive_arg_movement)->arg_1 = p) : (char *)'1';
-          //     /**
-          //    * @note 速度
-          //    */
-          //     i == 2 ? ((receive_arg_movement)->arg_2 = p) : (char *)'1';
-          //   }
-          //   p = strtok(NULL, ",");
-          // }
-          // (*degree) = atoi((*receive_arg_movement).arg_1);
-          // (*speed_rate) = atoi((*receive_arg_movement).arg_2);
-          // // Serial.println(*degree);
-          // // Serial.println(*speed_rate);
-          // all_direction_movement.any(&speed_set, (*degree), (*speed_rate));
-          // // 释放内存
-          // delete[] myCharArray2;
-          // delete degree;
-          // delete speed_rate;
+          // 即2,1 顺时针 2,2逆时针
+          (receive_arg_movement2)->arg_1 = (*split_result)[2];
+          if ((receive_arg_movement2)->arg_1 == "1") {
+            all_direction_movement.rotate_clockwise(&speed_set, 10);
+          } else if ((receive_arg_movement2)->arg_1 == "2") {
+            all_direction_movement.rotate_clockwise(&speed_set, 10);
+          }
           break;
         default:
           break;
@@ -143,6 +149,7 @@ void handle_serial_from_8266(SoftwareSerial *Serial_8266, String *char_sum) {
       *char_sum = "";
       delete split_result;
       delete receive_arg_movement;
+      delete receive_arg_movement2;
     }
   }
 }

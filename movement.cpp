@@ -94,7 +94,7 @@ Movement_Combine_Arg* All_Direction_Movement::combine_movement_arg(Movement_Comb
 }
 
 void All_Direction_Movement::any(Speed_Set* speed_set, float degree, int speed_rate) {
-  
+
   // 0-360°
   if (degree >= 0 && degree <= 360) {
     /**
@@ -122,4 +122,18 @@ void All_Direction_Movement::any(Speed_Set* speed_set, float degree, int speed_r
     delete m_c_a_y;
     delete m_c_a_final;
   }
+}
+
+void All_Direction_Movement::rotate_clockwise(Speed_Set* speed_set, int speed_rate) {
+  (*speed_set).speed_set_1 = speed_rate;
+  (*speed_set).speed_set_2 = -speed_rate;
+  (*speed_set).speed_set_3 = speed_rate;
+  (*speed_set).speed_set_4 = -speed_rate;
+}
+
+void All_Direction_Movement::rotate_anti_clockwise(Speed_Set* speed_set, int speed_rate) {
+  (*speed_set).speed_set_1 = -speed_rate;
+  (*speed_set).speed_set_2 = speed_rate;
+  (*speed_set).speed_set_3 = -speed_rate;
+  (*speed_set).speed_set_4 = speed_rate;
 }

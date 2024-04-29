@@ -4,11 +4,11 @@
 // @github https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560
 
 #include "head.h"
-#include <avr/iom16u2.h>
+// #include <avr/iom16u2.h>
 #include "Arduino.h"
 
 // #include "C:/Users/Onion/AppData/Local/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/avr/include/avr/iom16u2.h"
-float ultra_distance; // 距离变量
+float ultra_distance;  // 距离变量
 
 volatile int count_1 = 0;
 volatile int count_2 = 0;
@@ -18,61 +18,61 @@ String char_sum;
 
 unsigned long speed_previous_time = 0;
 unsigned long pid_previous_time = 0;
+unsigned long serial_previous_time = 0;
+
 const unsigned long speed_sample_interval = 20;
 const unsigned long pid_control_interval = 50;
+const unsigned long serial_interval = 500;
+
 
 // @WHY：为什么写在这里呢，被逼无奈，extern 和volatile 在arduino不能同时使用，无法跨文件传全局变量，
 // 又因为中断无法实现传参，只能写在主函数了
 // Arduino 的跨文件数据结构做的很不好，非常不适合比较复杂的项目
 // 下次改用STM32算了
-void interrupt_sum_encoder_1()
-{
+void interrupt_sum_encoder_1() {
   sum_encoder(&count_1, Encoder_1_1, Encoder_1_2);
 }
-void interrupt_sum_encoder_2()
-{
+void interrupt_sum_encoder_2() {
   sum_encoder(&count_2, Encoder_2_1, Encoder_2_2);
 }
-void interrupt_sum_encoder_3()
-{
+void interrupt_sum_encoder_3() {
   sum_encoder(&count_3, Encoder_3_1, Encoder_3_2);
 }
-void interrupt_sum_encoder_4()
-{
+void interrupt_sum_encoder_4() {
   sum_encoder(&count_4, Encoder_4_1, Encoder_4_2);
 }
 
-void setup()
-{
+void setup() {
   all_init();
-  if (en_all_arg.en_all)
-  {
-    EIFR = _BV(INTF4); // 清除MEGA 2560中断0请求标志位//引脚2
-    EIFR = _BV(INTF5); // 清除MEGA 2560中断1请求标志位//引脚3
+  if (en_all_arg.en_all) {
+    EIFR = _BV(INTF4);  // 清除MEGA 2560中断0请求标志位//引脚2
+    EIFR = _BV(INTF5);  // 清除MEGA 2560中断1请求标志位//引脚3
     attachInterrupt(digitalPinToInterrupt(Encoder_1_1), interrupt_sum_encoder_1, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(Encoder_2_1), interrupt_sum_encoder_2, CHANGE); // 当电平发生改变时触发中断函数
-    attachInterrupt(digitalPinToInterrupt(Encoder_3_1), interrupt_sum_encoder_3, CHANGE); // 当电平发生改变时触发中断函数
-    attachInterrupt(digitalPinToInterrupt(Encoder_4_1), interrupt_sum_encoder_4, CHANGE); // 当电平发生改变时触发中断函数
+    attachInterrupt(digitalPinToInterrupt(Encoder_2_1), interrupt_sum_encoder_2, CHANGE);  // 当电平发生改变时触发中断函数
+    attachInterrupt(digitalPinToInterrupt(Encoder_3_1), interrupt_sum_encoder_3, CHANGE);  // 当电平发生改变时触发中断函数
+    attachInterrupt(digitalPinToInterrupt(Encoder_4_1), interrupt_sum_encoder_4, CHANGE);  // 当电平发生改变时触发中断函数
     delay(1000);
   }
 }
 
-void loop()
-{
+void loop() {
   // 使能
-  if (en_all_arg.en_all)
-  {
-    // 处理串口,无延时
-    handle_serial_from_8266(&Serial_8266, &char_sum);
+  if (en_all_arg.en_all) {
+    // 处理收到的串口指令,无延时
+    handle_serial_from_8266(&Serial_8266, &char_sum, &speed_now);
 
-    unsigned long current_time = millis(); // 获取当前时间
+    unsigned long current_time = millis();  // 获取当前时间
+
     // 判断是否达到延迟时间间隔
-    if (current_time - speed_previous_time >= speed_sample_interval)
-    {
+    if (current_time - speed_previous_time >= speed_sample_interval) {
       // ultra_distance = use_ultrasonic();
+
 
       // 计算速度,写入speed_now
       speed_calculate(&count_1, &count_2, &count_3, &count_4, &speed_now);
+      // handle_serial_to_8266(&Serial_8266, &speed_now);
+
+
 
       // 调整速度
       // speed_set.speed_set_1 = 0;
@@ -89,21 +89,21 @@ void loop()
       err_speed_3.calculate_err_motor(speed_now.speed_3, speed_set.speed_set_3);
       err_speed_4.calculate_err_motor(speed_now.speed_4, speed_set.speed_set_4);
 
-      pid_motor_1.P = 0.25;
+      pid_motor_1.P = 0.37;
       pid_motor_1.I = 0.44;
-      pid_motor_1.D = 0.05;
+      pid_motor_1.D = 0.15;
 
-      pid_motor_2.P = 0.25;
+      pid_motor_2.P = 0.37;
       pid_motor_2.I = 0.44;
-      pid_motor_2.D = 0.05;
+      pid_motor_2.D = 0.15;
 
-      pid_motor_3.P = 0.25;
+      pid_motor_3.P = 0.37;
       pid_motor_3.I = 0.44;
-      pid_motor_3.D = 0.05;
+      pid_motor_3.D = 0.15;
 
-      pid_motor_4.P = 0.25;
+      pid_motor_4.P = 0.42;
       pid_motor_4.I = 0.44;
-      pid_motor_4.D = 0.05;
+      pid_motor_4.D = 0.15;
 
       // 计算PID修正量
       pid_motor_1.calculate_pid_motor(&err_speed_1);
@@ -112,8 +112,7 @@ void loop()
       pid_motor_4.calculate_pid_motor(&err_speed_4);
 
       // 执行PID输出
-      if (en_all_arg.en_motor.en_motor_all)
-      {
+      if (en_all_arg.en_motor.en_motor_all) {
         en_all_arg.en_motor.en_motor_1 ? pid_motor_1.pid_control_motor(motor_port_zq) : (void)1;
         en_all_arg.en_motor.en_motor_2 ? pid_motor_2.pid_control_motor(motor_port_yq) : (void)1;
         en_all_arg.en_motor.en_motor_3 ? pid_motor_3.pid_control_motor(motor_port_zh) : (void)1;
@@ -141,17 +140,17 @@ void loop()
       // Serial.println("speed_set: ");
       // Serial.print(speed_set.speed_set_1);
 
+      // if (speed_now.speed_1 != 0 && speed_now.speed_2 != 0) {
       // Serial.print("V1=");
-      // Serial.print(speed_now.speed_1);
-      // printBreak();
+      // Serial.println(speed_now.speed_1);
       // Serial.print("V2=");
-      // Serial.print(speed_now.speed_2);
-      // printBreak();
+      // Serial.println(speed_now.speed_2);
       // Serial.print("V3=");
-      // Serial.print(speed_now.speed_3);
-      // printBreak();
+      // Serial.println(speed_now.speed_3);
       // Serial.print("V4=");
-      // Serial.print(speed_now.speed_4);
+      // Serial.println(speed_now.speed_4);
+      // }
+
       // printBreak();
 
       // Serial.println("count_2=");
@@ -166,10 +165,14 @@ void loop()
       // Serial.println("m/s");
       // Serial.println("my_motor_arg.dir");
 
-      speed_previous_time = current_time; // 更新上一次执行函数的时间
+      speed_previous_time = current_time;  // 更新上一次执行函数的时间
     }
-    if (current_time - pid_previous_time >= pid_control_interval)
-    {
+    if (current_time - serial_previous_time >= serial_interval) {
+      // 发送信息给8266，有延时
+      handle_serial_to_8266(&Serial_8266, &speed_now);
+      serial_previous_time = current_time;
+    }
+    if (current_time - pid_previous_time >= pid_control_interval) {
       pid_previous_time = current_time;
     }
   }
