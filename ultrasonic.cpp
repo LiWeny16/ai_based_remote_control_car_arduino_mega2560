@@ -6,7 +6,12 @@
 #include "Arduino.h"
 #include "head.h"
 
+Servo Myservo;
+
+
 void init_ultrasonic() {
+  Myservo.attach(Servo_PWM);
+  // Myservo.write(180);
   pinMode(Ultra_Trig, OUTPUT);
   pinMode(Ultra_Echo, INPUT);
 }
@@ -35,3 +40,5 @@ float use_ultrasonic() {
   cm = (temp * 17) / 1000;  //把回波时间换算成cm
   return cm;
 }
+
+  

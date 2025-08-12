@@ -15,14 +15,15 @@ volatile int count_2 = 0;
 volatile int count_3 = 0;
 volatile int count_4 = 0;
 String char_sum;
-
+int i = 40;
+bool increasing = true;  // 控制舵机角度增加或减少的标志
 unsigned long speed_previous_time = 0;
 unsigned long pid_previous_time = 0;
 unsigned long serial_previous_time = 0;
 
 const unsigned long speed_sample_interval = 20;
 const unsigned long pid_control_interval = 50;
-const unsigned long serial_interval = 500;
+const unsigned long serial_interval = 100;
 
 
 // @WHY：为什么写在这里呢，被逼无奈，extern 和volatile 在arduino不能同时使用，无法跨文件传全局变量，
@@ -65,8 +66,26 @@ void loop() {
 
     // 判断是否达到延迟时间间隔
     if (current_time - speed_previous_time >= speed_sample_interval) {
-      // ultra_distance = use_ultrasonic();
 
+      ultra_distance = use_ultrasonic();
+      if (increasing) {
+        if (i < 140) {
+          i++;  // 增加角度
+        } else {
+          increasing = false;  // 达到180度，改变方向
+        }
+      } else {
+        if (i > 40) {
+          i--;  // 减少角度
+        } else {
+          increasing = true;  // 达到0度，改变方向
+        }
+      }
+      // Myservo.write(i);  // 将当前角度写入舵机
+      // Serial.print("distance:");
+      // Serial.print(ultra_distance);
+      // Serial.print(" cm");
+      // Serial.println("");
 
       // 计算速度,写入speed_now
       speed_calculate(&count_1, &count_2, &count_3, &count_4, &speed_now);

@@ -16,16 +16,21 @@ void init_serial(unsigned long baud) {
   SerialLock = true;
 }
 void handle_serial_to_8266(SoftwareSerial *Serial_8266, Speed *speed_now) {
-  if (!SerialLock) {
-    (*Serial_8266).print((*speed_now).speed_1);
-    (*Serial_8266).print("|");
-    (*Serial_8266).print((*speed_now).speed_2);
-    (*Serial_8266).print("|");
-    (*Serial_8266).print((*speed_now).speed_3);
-    (*Serial_8266).print("|");
-    (*Serial_8266).print((*speed_now).speed_4);
-    (*Serial_8266).print("?");
-  }
+  // if (!SerialLock) {
+  (*Serial_8266).print((*speed_now).speed_1);
+  (*Serial_8266).print("|");
+  (*Serial_8266).print((*speed_now).speed_2);
+  (*Serial_8266).print("|");
+  (*Serial_8266).print((*speed_now).speed_3);
+  (*Serial_8266).print("|");
+  (*Serial_8266).print((*speed_now).speed_4);
+  (*Serial_8266).print("|");
+  (*Serial_8266).print(ultra_distance);
+  (*Serial_8266).print("?");
+
+  // Serial.print((*speed_now).speed_3);
+  // Serial.print("F** u");
+  // }
 }
 void handle_serial_from_8266(SoftwareSerial *Serial_8266, String *char_sum, Speed *speed_now) {
 
@@ -45,26 +50,28 @@ void handle_serial_from_8266(SoftwareSerial *Serial_8266, String *char_sum, Spee
     // Serial.println((int)b);
     if (b == '?') {
       SerialLock = false;
-      // (*Serial_8266).print((*speed_now).speed_1);
-      // (*Serial_8266).print("|");
-      // (*Serial_8266).print((*speed_now).speed_2);
-      // (*Serial_8266).print("|");
-      // (*Serial_8266).print((*speed_now).speed_3);
-      // (*Serial_8266).print("|");
-      // (*Serial_8266).print((*speed_now).speed_4);
-      // (*Serial_8266).print("?");
       /**
        * @note 把最后一个"?"去掉
        */
       String *split_result = new String;
       // Serial.println(*char_sum);
       (*split_result) = (*char_sum).substring(0, (*char_sum).length() - 1);
-      // Serial.println(*split_result);
+      // Serial.print((*split_result)[0]);
       // String control_type = *(&split_result);
       // char* choice = new char;
       const char choice = (*split_result)[0];
       // String choice = ((*split_result));
-      // Serial.println(choice);
+
+      // 旋转
+      if (choice == '2') {
+        // Serial.print((*split_result)[2]);
+        // (receive_arg_movement2)->arg_1 = (*split_result)[2];
+        if ((*split_result)[2] == '1') {
+          all_direction_movement.rotate_clockwise(&speed_set, 20);
+        } else if ((*split_result)[2] == '2') {
+          all_direction_movement.rotate_anti_clockwise(&speed_set, 20);
+        }
+      }
       switch (choice) {
           // 全向移动
         case '1':
@@ -110,13 +117,14 @@ void handle_serial_from_8266(SoftwareSerial *Serial_8266, String *char_sum, Spee
           delete speed_rate;
           break;
         case '2':
-          // 即2,1 顺时针 2,2逆时针
-          (receive_arg_movement2)->arg_1 = (*split_result)[2];
-          if ((receive_arg_movement2)->arg_1 == "1") {
-            all_direction_movement.rotate_clockwise(&speed_set, 10);
-          } else if ((receive_arg_movement2)->arg_1 == "2") {
-            all_direction_movement.rotate_clockwise(&speed_set, 10);
-          }
+          // // 即2,1 顺时针 2,2逆时针, 3 停
+          // Serial.print("???");
+          // (receive_arg_movement2)->arg_1 = (*split_result)[2];
+          // if ((receive_arg_movement2)->arg_1 == "1") {
+          //   all_direction_movement.rotate_clockwise(&speed_set, 10);
+          // } else if ((receive_arg_movement2)->arg_1 == "2") {
+          //   all_direction_movement.rotate_clockwise(&speed_set, 10);
+          // }
           break;
         default:
           break;

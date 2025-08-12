@@ -6,10 +6,15 @@
 #ifndef HEAD_H
 #define HEAD_H
 #include <SoftwareSerial.h>
+#include <Servo.h>
 // #include "Arduino.h"
 #include "port.h"
 
 #define MAX_PWM_ABS 170
+
+// ******************************//Servo//****************
+extern Servo Myservo;  // 创建舵机对象来控制舵机
+
 // ******************************//Motor//****************
 enum DIR {
   FOR,  // Forward;
