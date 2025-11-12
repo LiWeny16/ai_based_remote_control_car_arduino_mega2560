@@ -248,6 +248,11 @@ public:
 void handle_serial_from_8266(SoftwareSerial *Serial_8266, String *char_sum, Speed *speed_now);
 void handle_serial_to_8266(SoftwareSerial *Serial_8266, Speed *speed_now);
 
+// FreeRTOS版本的串口函数
+void init_serial_tasks();
+void Task_Serial_Receive(void *pvParameters);
+void Task_Command_Parser(void *pvParameters);
+
 // ******************************//Movement//****************
 
 /**
