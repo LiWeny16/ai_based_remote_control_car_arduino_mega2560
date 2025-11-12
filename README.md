@@ -8,7 +8,7 @@
 [![FreeRTOS](https://img.shields.io/badge/RTOS-FreeRTOS-green.svg)](https://www.freertos.org/)
 [![C++](https://img.shields.io/badge/Language-C%2B%2B-blue.svg)](https://isocpp.org/)
 
-[English](#english) | [中文](#chinese)
+[English](#english) | [中文](./README_CN.md)
 
 ---
 
