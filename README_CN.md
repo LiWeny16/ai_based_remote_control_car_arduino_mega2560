@@ -8,7 +8,36 @@
 
 ## 项目概述
 
-这是一个先进的全向机器人小车平台，专为自主导航和远程控制应用设计。基于Arduino Mega 2560构建，系统集成了复杂的运动控制算法、实时PID调节、无线通信和环境感知能力。该架构支持传统的远程操作和AI辅助的自主导航场景。
+这是一个 2024 年毕业设计中的全向遥控小车原型，结合 Arduino Mega 2560 运动控制、麦克纳姆轮底盘、无线控制、距离感知和 AI 交互实验。
+
+[English](./README.md) | 中文
+
+## 真机演示
+
+| 网页控制小车移动 | 人脸识别演示 |
+| --- | --- |
+| [![网页摇杆控制真车](docs/media/car-demo.gif)](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/04-web-motion-control.mp4) | [![人脸识别界面](docs/media/face-recognition-demo.jpg)](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/08-face-recognition.mp4) |
+
+点击预览可打开或下载原始 MP4。全部 8 段原视频也可在[演示视频发布页](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/tag/fyp-demo-2024)查看。
+
+- **运动控制：**四个麦克纳姆轮，结合编码器反馈与 PID 电机控制；网页通过 ESP8266 Wi-Fi 链路发送控制指令。
+- **端侧 AI：**实物原型使用 Kendryte K210 在设备端运行人脸识别模型。完整项目还包含浏览器端人脸分析，以及基于 TensorFlow.js 的语音命令实验。
+- **感知与交互：**视频展示了网页控制、摄像头画面与超声波测距读数。
+
+**仓库范围：**本仓库保存 Arduino 运动控制固件。完整原型使用的 K210 模型及固件、ESP8266 固件和网页应用属于其他组件，目前未包含在本仓库中；仅凭本仓库无法复现全部 AI 演示。
+
+| 原始视频 | 展示内容 |
+| --- | --- |
+| [网页控制小车](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/04-web-motion-control.mp4) | 网页摇杆与实体小车 |
+| [麦克纳姆轮移动](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/07-mecanum-motion.mp4) | 实体小车在地面移动 |
+| [人脸识别](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/08-face-recognition.mp4) | 摄像头与人脸识别界面 |
+| [语音模型界面](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/02-audio-model-interface.mp4) | 语音命令样本采集与训练界面 |
+| [摄像头与移动控制](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/05-camera-motion-control.mp4) | 带摄像头画面的网页控制 |
+| [网页超声波测距](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/03-ultrasonic-web.mp4) | 距离传感器与网页读数 |
+| [串口超声波测距](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/06-ultrasonic-serial.mp4) | 传感器与串口距离输出 |
+| [摄像头界面](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/01-camera-interface.mp4) | 摄像头与用户界面 |
+
+---
 
 ### 技术亮点
 
@@ -21,6 +50,7 @@
 
 ## 目录
 
+- [真机演示](#真机演示)
 - [系统架构](#系统架构)
 - [软件设计](#软件设计)
 - [硬件配置](#硬件配置)
@@ -44,7 +74,7 @@
 - 四个独立PID控制器（每个电机一个）
 - 增量式PID算法，带抗积分饱和保护
 - 可配置的比例、积分和微分系数
-- 实时误差跟踪和修正（50Hz更新率）
+- 实时误差跟踪和修正（50 毫秒间隔，即 20 Hz）
 
 **编码器反馈系统**
 - 正交编码器信号处理
@@ -95,7 +125,7 @@
 ```
 项目结构：
 ├── main.ino                    # 基于millis的主控制循环
-├── main_freertos_serial.ino    # FreeRTOS任务调度实现
+├── main_freertos.ino           # FreeRTOS任务调度实现
 ├── all_init.cpp                # 系统初始化例程
 ├── movement.cpp                # 全向运动控制算法
 ├── pid.cpp                     # PID控制器实现
@@ -143,7 +173,7 @@ class PID_Motor {
 - 串口通信：100ms间隔（10Hz）
 - 带时间戳间隔的非阻塞执行
 
-**FreeRTOS实现（main_freertos_serial.ino）**
+**FreeRTOS实现（main_freertos.ino）**
 - 基于优先级抢占的确定性任务调度
 - 专用任务用于速度计算、PID控制、通信和传感
 - 基于队列的任务间通信用于命令缓冲
@@ -251,11 +281,13 @@ cd ai_based_remote_control_car_arduino_mega2560
 
 **4. 上传固件**
 ```
-文件 → 打开 → 选择 main.ino（或main_freertos_serial.ino）
+文件 → 打开 → 选择 main.ino（或 main_freertos.ino）
 工具 → 开发板 → Arduino Mega or Mega 2560
 工具 → 端口 → [选择您的Arduino端口]
 项目 → 上传
 ```
+
+标准版和 FreeRTOS 版是两套可选实现。请准备独立的 Arduino 草图，选择 `main.ino` 与 `serial.cpp`，或选择 `main_freertos.ino` 与 `serial_freertos.cpp`，并搭配共享的源文件和头文件。两个 `.ino` 都定义了 `setup()` 和 `loop()`，两套串口实现也有重复符号，因此不能同时编译两组实现。
 
 **5. 验证操作**
 - 打开串口监视器（115200波特率）
@@ -281,6 +313,8 @@ cd ai_based_remote_control_car_arduino_mega2560
 
 ## 性能指标
 
+以下数据保留自原 README，其测量条件尚未在本次文档更新中独立验证。
+
 ### 控制系统性能
 
 | 指标 | 值 | 备注 |
@@ -289,7 +323,7 @@ cd ai_based_remote_control_car_arduino_mega2560
 | 速度控制误差 | ±5% | 调优PID后的稳态误差 |
 | 命令响应 | <100ms | 从命令接收到执行的时间 |
 | 编码器分辨率 | 16脉冲/转 | 每个电机轴旋转 |
-| PID更新率 | 50Hz | 控制循环频率 |
+| PID更新率 | 20Hz | 当前源码中为 50 毫秒间隔 |
 | 速度采样 | 50Hz | 速度测量频率 |
 
 ### 通信规格
@@ -318,7 +352,7 @@ cd ai_based_remote_control_car_arduino_mega2560
 
 ### PID调优
 
-可以通过修改`main.ino`或`main_freertos_serial.ino`中的系数来调整PID控制器：
+可以通过修改 `main.ino` 或 `main_freertos.ino` 中的系数来调整 PID 控制器：
 
 ```cpp
 // 示例：调整电机1的PID参数
@@ -390,7 +424,7 @@ Serial.println(speed_now.speed_1);
 该平台为高级机器人应用提供了坚实的基础：
 
 - **自主导航**：使用超声波和编码器数据实现SLAM算法
-- **计算机视觉**：集成摄像头模块进行物体检测和跟踪
+- **计算机视觉**：在已有 K210 和摄像头实验基础上扩展物体跟踪
 - **传感器融合**：添加IMU以改进里程计和稳定性控制
 - **路径规划**：实现A*或RRT算法进行避障
 - **机器学习**：部署轻量级神经网络进行行为学习

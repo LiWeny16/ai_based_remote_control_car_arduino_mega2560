@@ -16,7 +16,34 @@
 
 ## Project Overview
 
-An advanced omnidirectional robotic car platform designed for autonomous navigation and remote control applications. Built on Arduino Mega 2560, this system integrates sophisticated motion control algorithms, real-time PID regulation, wireless communication, and environmental sensing capabilities. The architecture supports both traditional remote operation and AI-assisted autonomous navigation scenarios.
+An omnidirectional remote-control car developed as a 2024 final-year project. The physical prototype combines an Arduino Mega 2560 motion controller, a Mecanum-wheel chassis, wireless control, distance sensing, and AI interaction experiments.
+
+## Physical Prototype Demos
+
+| Web-controlled movement | Face-recognition demo |
+| --- | --- |
+| [![A browser joystick controlling the physical car](docs/media/car-demo.gif)](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/04-web-motion-control.mp4) | [![Face-recognition interface](docs/media/face-recognition-demo.jpg)](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/08-face-recognition.mp4) |
+
+Click a preview to open or download its original MP4. The eight original clips are published as [release assets](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/tag/fyp-demo-2024).
+
+- **Movement:** four Mecanum wheels, encoder feedback and PID motor control; a browser interface sends commands over Wi-Fi via ESP8266.
+- **Edge AI:** the prototype used a Kendryte K210 to run an on-device face-recognition model. The broader project also included browser-based face analysis and a speech-command experiment using TensorFlow.js.
+- **Sensing and interaction:** the demos show the web controller, camera view and ultrasonic distance readings.
+
+**Repository scope:** this repository contains the Arduino motion-control firmware. The K210 model and firmware, ESP8266 firmware, and browser application used in the full prototype are separate components and are not included here; the full demonstrations cannot be reproduced from this repository alone.
+
+| Original clip | What it shows |
+| --- | --- |
+| [Web motion control](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/04-web-motion-control.mp4) | Browser joystick and physical car |
+| [Mecanum motion](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/07-mecanum-motion.mp4) | The physical car moving on the floor |
+| [Face recognition](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/08-face-recognition.mp4) | Camera and face-recognition interface |
+| [Audio model interface](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/02-audio-model-interface.mp4) | Speech-command sample and training interface |
+| [Camera and motion control](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/05-camera-motion-control.mp4) | Browser control with a camera view |
+| [Ultrasonic readings in browser](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/03-ultrasonic-web.mp4) | Distance sensor and web display |
+| [Ultrasonic readings over serial](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/06-ultrasonic-serial.mp4) | Sensor and serial distance output |
+| [Camera interface](https://github.com/LiWeny16/ai_based_remote_control_car_arduino_mega2560/releases/download/fyp-demo-2024/01-camera-interface.mp4) | Camera and user interface |
+
+---
 
 ### Technical Highlights
 
@@ -29,6 +56,7 @@ An advanced omnidirectional robotic car platform designed for autonomous navigat
 
 ## Table of Contents
 
+- [Physical Prototype Demos](#physical-prototype-demos)
 - [System Architecture](#system-architecture)
 - [Software Design](#software-design)
 - [Hardware Configuration](#hardware-configuration)
@@ -52,7 +80,7 @@ An advanced omnidirectional robotic car platform designed for autonomous navigat
 - Four independent PID controllers (one per motor)
 - Incremental PID algorithm with anti-windup protection
 - Configurable proportional, integral, and derivative coefficients
-- Real-time error tracking and correction (50Hz update rate)
+- Real-time error tracking and correction (50 ms / 20 Hz update interval)
 
 **Encoder Feedback System**
 - Quadrature encoder signal processing
@@ -103,7 +131,7 @@ An advanced omnidirectional robotic car platform designed for autonomous navigat
 ```
 Project Structure:
 ├── main.ino                    # Main control loop with millis-based timing
-├── main_freertos_serial.ino    # FreeRTOS implementation with task scheduling
+├── main_freertos.ino           # FreeRTOS implementation with task scheduling
 ├── all_init.cpp                # System initialization routines
 ├── movement.cpp                # Omnidirectional motion control algorithms
 ├── pid.cpp                     # PID controller implementation
@@ -151,7 +179,7 @@ class PID_Motor {
 - Serial communication: 100ms interval (10Hz)
 - Non-blocking execution with time-stamped intervals
 
-**FreeRTOS Implementation (main_freertos_serial.ino)**
+**FreeRTOS Implementation (main_freertos.ino)**
 - Deterministic task scheduling with priority-based preemption
 - Dedicated tasks for speed calculation, PID control, communication, and sensing
 - Queue-based inter-task communication for command buffering
@@ -259,11 +287,13 @@ Edit `port.h` if your wiring differs from default configuration:
 
 **4. Upload Firmware**
 ```
-File → Open → select main.ino (or main_freertos_serial.ino)
+File → Open → select main.ino (or main_freertos.ino)
 Tools → Board → Arduino Mega or Mega 2560
 Tools → Port → [Select your Arduino port]
 Sketch → Upload
 ```
+
+The standard and FreeRTOS files are alternative implementations. Prepare a separate Arduino sketch using either `main.ino` with `serial.cpp`, or `main_freertos.ino` with `serial_freertos.cpp`, together with the shared source and header files. Both `.ino` files define `setup()` and `loop()`, and the serial implementations contain duplicate symbols, so do not compile both pairs together.
 
 **5. Verify Operation**
 - Open Serial Monitor (115200 baud)
@@ -289,6 +319,8 @@ Sketch → Upload
 
 ## Performance Metrics
 
+The figures below are retained from the original README. Their measurement conditions have not been independently verified in this documentation update.
+
 ### Control System Performance
 
 | Metric | Value | Notes |
@@ -297,7 +329,7 @@ Sketch → Upload
 | Speed Control Error | ±5% | Steady-state error with tuned PID |
 | Command Response | <100ms | Time from command receipt to execution |
 | Encoder Resolution | 16 pulses/rev | Per motor shaft rotation |
-| PID Update Rate | 50Hz | Control loop frequency |
+| PID Update Rate | 20Hz | 50 ms interval in the current source |
 | Speed Sampling | 50Hz | Velocity measurement frequency |
 
 ### Communication Specifications
@@ -326,7 +358,7 @@ Sketch → Upload
 
 ### PID Tuning
 
-The PID controllers can be tuned by modifying coefficients in `main.ino` or `main_freertos_serial.ino`:
+The PID controllers can be tuned by modifying coefficients in `main.ino` or `main_freertos.ino`:
 
 ```cpp
 // Example: Tuning Motor 1 PID parameters
@@ -398,7 +430,7 @@ Serial.println(speed_now.speed_1);
 This platform provides a solid foundation for advanced robotics applications:
 
 - **Autonomous Navigation**: Implement SLAM algorithms using ultrasonic and encoder data
-- **Computer Vision**: Integrate camera module for object detection and tracking
+- **Computer Vision**: Extend the existing K210 and camera experiments with object tracking
 - **Sensor Fusion**: Add IMU for improved odometry and stability control
 - **Path Planning**: Implement A* or RRT algorithms for obstacle avoidance
 - **Machine Learning**: Deploy lightweight neural networks for behavior learning
